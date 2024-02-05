@@ -3,7 +3,6 @@ import os
 
 path_user_data = 'user_data.yaml'
 
-# check 
 if not os.path.exists(path_user_data):
     print("没有user_data正在创建...")
     default_content = {
@@ -11,18 +10,18 @@ if not os.path.exists(path_user_data):
         'current_leaderboard_difficulty': 'Easy',
         'now_user_name':'xxx',
         'leaderboards': {
-            'Easy': {f'User{i}': {'Name': '', 'Time': ''} for i in range(1, 8)},
-            'Medium': {f'User{i}': {'Name': '', 'Time': ''} for i in range(1, 8)},
-            'Hard': {f'User{i}': {'Name': '', 'Time': ''} for i in range(1, 8)},
-            'Very Hard': {f'User{i}': {'Name': '', 'Time': ''} for i in range(1, 8)}
+            'Easy': {f'User{1}': {'Name': '', 'Time': ''} },
+            'Medium': {f'User{1}': {'Name': '', 'Time': ''} },
+            'Hard': {f'User{1}': {'Name': '', 'Time': ''} },
+            'Very Hard': {f'User{1}': {'Name': '', 'Time': ''} }
         }
     }
     with open(path_user_data, 'w') as file:
         yaml.dump(default_content, file, allow_unicode=True)
 
+
 def read_profile():
-    with open(path_user_data, 'r') as file:
-        data = yaml.load(file, Loader=yaml.FullLoader)
+    data = read_yaml(path_user_data)
     now_user_name = data['now_user_name']
     current_difficulty = data['current_difficulty']
     current_leaderboard_difficulty = data['current_leaderboard_difficulty']
@@ -31,8 +30,7 @@ def read_profile():
 
 
 def read_leaderboards():
-    with open(path_user_data, 'r') as file:
-        data = yaml.load(file, Loader=yaml.FullLoader)
+    data = read_yaml(path_user_data)
     original_data = data['leaderboards']
     leaderboards = {}
     for difficulty, users in original_data.items():
@@ -44,36 +42,9 @@ def read_leaderboards():
     return leaderboards
 
 
-def alter_profile_current_difficulty(new_current_difficulty):
-    with open(path_user_data, 'r', encoding='utf-8') as f:
-        data = yaml.safe_load(f)
-    data['current_difficulty'] = new_current_difficulty
-    with open(path_user_data, 'w', encoding='utf-8') as f:
-        yaml.dump(data, f, allow_unicode=True)
-    return True
-
-def alter_profile_current_leaderboard_difficulty(new_current_leaderboard_difficulty):
-    with open(path_user_data, 'r', encoding='utf-8') as f:
-        data = yaml.safe_load(f)
-    data['current_leaderboard_difficulty'] = new_current_leaderboard_difficulty
-    with open(path_user_data, 'w', encoding='utf-8') as f:
-        yaml.dump(data, f, allow_unicode=True)
-    return True
-
-def alter_profile_current_user_name(new_name):
-    with open(path_user_data, 'r', encoding='utf-8') as f:
-        data = yaml.safe_load(f)
-    data['now_user_name'] = new_name
-    with open(path_user_data, 'w', encoding='utf-8') as f:
-        yaml.dump(data, f, allow_unicode=True)
-    return True
-
-def raed_user_name():
-    with open(path_user_data, 'r', encoding='utf-8') as f:
-        data = yaml.safe_load(f)
+def read_user_name():
+    data = read_yaml(path_user_data)
     return data['now_user_name']
-
-
 
 
 def read_yaml(file_path):
@@ -81,10 +52,33 @@ def read_yaml(file_path):
     with open(file_path, 'r') as file:
         return yaml.load(file, Loader=yaml.FullLoader)
 
+
 def write_yaml(data, file_path):
     """写回YAML文件"""
     with open(file_path, 'w') as file:
         yaml.dump(data, file)
+
+
+def alter_profile_current_difficulty(new_current_difficulty):
+    data = read_yaml(path_user_data)
+    data['current_difficulty'] = new_current_difficulty
+    write_yaml(data, path_user_data)
+    return True
+
+
+def alter_profile_current_leaderboard_difficulty(new_current_leaderboard_difficulty):
+    data = read_yaml(path_user_data)
+    data['current_leaderboard_difficulty'] = new_current_leaderboard_difficulty
+    write_yaml(data, path_user_data)
+    return True
+
+
+def alter_profile_current_user_name(new_name):
+    data = read_yaml(path_user_data)
+    data['now_user_name'] = new_name
+    write_yaml(data, path_user_data)
+    return True
+
 
 def update_leaderboard(user_name, difficulty, user_time):
     data = read_yaml(path_user_data)
@@ -99,11 +93,9 @@ def update_leaderboard(user_name, difficulty, user_time):
         # 根据时间排序并截取前7个记录
         leaderboard_list = sorted(leaderboard_list, key=lambda x: x['Time'])[:7]
 
-        # 更新数据
         for i, record in enumerate(leaderboard_list, start=1):
             leaderboards[f'User{i}'] = {'Name': record['Name'], 'Time': str(record['Time'])}
         
-        # 清理多余的记录
         for i in range(len(leaderboard_list) + 1, 8):
             leaderboards.pop(f'User{i}', None)
 

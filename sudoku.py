@@ -44,7 +44,7 @@ def find_empty_location(board):
     return None
 
 
-def remove_numbers_from_board(board, attempts=5):
+def remove_numbers_from_board(board, attempts):
     """
     从完整的棋盘中移除数字以创建谜题。
     'attempts' 控制移除数字的尝试次数，该参数可以根据难度级别调整。
@@ -82,8 +82,8 @@ def generate_sudoku_puzzle(difficulty):
     return board
 
 def create_sudoku_board(difficulty):
-    # print(f"开始创建...难度为{difficulty}的棋盘")
-    # puzzle = generate_sudoku_puzzle(difficulty=difficulty)
+    print(f"开始创建...难度为{difficulty}的棋盘")
+    puzzle = generate_sudoku_puzzle(difficulty=difficulty)
     puzzle = [[4, 0, 3, 5, 9, 8, 2, 6, 1],
             [2, 9, 6, 4, 3, 1, 8, 7, 5],
             [8, 5, 1, 2, 7, 6, 4, 9, 3],
@@ -116,3 +116,4 @@ def is_valid_sudoku(board):
 
     return check_row_col(board) and check_row_col(zip(*board)) and check_subgrid(board)
     
+
