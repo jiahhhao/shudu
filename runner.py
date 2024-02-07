@@ -176,6 +176,7 @@ def check_button_click(mouse_pos):
                 current_difficulty = difficulty  # 更新当前难度
         # 如果点击返回按钮
         if button_rect_return.collidepoint(mouse_pos):
+            tools.alter_profile_current_difficulty(current_difficulty)
             game_state = 'menu'  # 返回菜单
 
     # 如果当前游戏状态为查看排行榜
@@ -187,6 +188,7 @@ def check_button_click(mouse_pos):
                 current_leaderboard_difficulty = difficulty
         # 如果点击返回按钮
         if button_rect_return.collidepoint(mouse_pos):
+            tools.alter_profile_current_leaderboard_difficulty(current_leaderboard_difficulty)
             game_state = 'menu'  # 返回菜单
 
     # 如果游戏状态为胜利
